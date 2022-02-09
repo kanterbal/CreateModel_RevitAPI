@@ -15,10 +15,11 @@ namespace CreateModel
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            CreateWall(doc, "Уровень 1", "Уровень 2");
+            var level1 = FoundLevel(doc, "Уровень 1");
+            var level2 = FoundLevel(doc, "Уровень 2");
+            CreateWall(doc, level1, level2);
             //AddDoor(doc, level1, wall[0]);
-           
+
             return Result.Succeeded;
         }
 
@@ -43,11 +44,11 @@ namespace CreateModel
         }
 
         //метод ссоздания стены
-        public void CreateWall(Document doc, string lev1, string lev2)
+        public List<Wall> CreateWall(Document doc, Level lev1, Level lev2)
         {
-            
-            var level1 = FoundLevel(doc, lev1);
-            var level2 = FoundLevel(doc, lev2);
+
+            var level1 = lev1;
+            var level2 = lev2;
             double width = UnitUtils.ConvertToInternalUnits(10000, UnitTypeId.Millimeters);
             double depth = UnitUtils.ConvertToInternalUnits(5000, UnitTypeId.Millimeters);
             double dx = width / 2;
@@ -72,7 +73,7 @@ namespace CreateModel
                 wall.get_Parameter(BuiltInParameter.WALL_HEIGHT_TYPE).Set(level2.Id);
             }
             transaction.Commit();
-
+            return wallList;
         }
     }
 }
